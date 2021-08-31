@@ -14,7 +14,7 @@ class AuthController extends BaseController
      *
      * @return array|array[]
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         $behaviors = parent::behaviors();
         if (YII_ENV_LOCAL) {
@@ -33,8 +33,7 @@ class AuthController extends BaseController
         $behaviors['authenticator'] = [
             'class'    => HttpBearerAuth::class,
             'optional' => [
-                '/user/login',
-                '/package/get-image'
+                '/site/login',
             ],
         ];
         return $behaviors;
