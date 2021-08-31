@@ -2,9 +2,11 @@
 
 use app\common\jwt\JwtValidationData;
 use sizeg\jwt\Jwt;
+use yii\web\Response;
 
 $params = require __DIR__ . '/params.php';
 $db     = require __DIR__ . '/db.php';
+require_once __DIR__ . '/../common/help/helper.php';
 
 $config = [
     'id'         => 'basic',
@@ -20,8 +22,9 @@ $config = [
             'cookieValidationKey' => 'KjCG6ZgAKVYR4MLxvYX5RalmDrvWmRiq',
         ],
         'response'     => [
-            'class'         => 'yii\web\Response',
-            'on beforeSend' => '\app\common\jwt\Response::beforeSend',
+            'class'         => Response::class,
+            'on beforeSend' => '\app\common\base\AppResponse::beforeSend',
+            'format'        => Response::FORMAT_JSON,
         ],
         'jwt'          => [
             'class'             => Jwt::class,
@@ -67,13 +70,13 @@ $config = [
     'params'     => $params,
 ];
 
-if (YII_ENV_DEV) {
+if (!YII_ENV_PROD) {
     // configuration adjustments for 'dev' environment
     $config['bootstrap'][]      = 'debug';
     $config['modules']['debug'] = [
-        'class' => 'yii\debug\Module',
+        'class'      => 'yii\debug\Module',
         // uncomment the following to add your IP if you are not connecting from localhost.
-        //'allowedIPs' => ['127.0.0.1', '::1'],
+        'allowedIPs' => ['127.0.0.1', '::1', '*'],
     ];
 
     $config['bootstrap'][]    = 'gii';

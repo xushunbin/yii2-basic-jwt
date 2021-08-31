@@ -13,7 +13,7 @@ class HttpBearerAuth extends JwtHttpBearerAuth
      *
      * @return bool
      */
-    public function isOptional($action)
+    public function isOptional($action): bool
     {
         $route = '/' . $action->controller->id . '/' . $action->id;
         foreach ($this->optional as $pattern) {

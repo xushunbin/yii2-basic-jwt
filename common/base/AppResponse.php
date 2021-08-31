@@ -1,14 +1,15 @@
 <?php
 
-namespace app\common\jwt;
+namespace app\common\base;
 
 use yii\base\BaseObject;
 use yii\base\Event;
+use yii\web\Response;
 
 /**
  *
  */
-class Response extends BaseObject
+class AppResponse extends BaseObject
 {
 
     /**
@@ -21,20 +22,22 @@ class Response extends BaseObject
      */
     const API_CODE_CUSTOM_ERROR = 0;
 
+    const API_CODE_UN_AUTH = 401;
+
     /**
      * @param Event $event
      */
     public static function beforeSend(Event $event)
     {
         /**
-         * @var \yii\web\Response $response
+         * @var Response $response
          */
         $response = $event->sender;
-        if ($response->format === \yii\web\Response::FORMAT_JSON) {
+        if ($response->format === Response::FORMAT_JSON) {
             $httpStatusCode = $response->getStatusCode();
-            $code             = $response->data['code'] ?? self::API_CODE_SUCCESS;
-            $ret              = [];
-            $ret['code']      = intval($code);
+            $code           = $response->data['code'] ?? self::API_CODE_SUCCESS;
+            $ret            = [];
+            $ret['code']    = intval($code);
             if ($httpStatusCode !== self::API_CODE_SUCCESS) {
                 // 接口手动返回错误信息
                 $ret['code'] = $httpStatusCode;
@@ -43,7 +46,11 @@ class Response extends BaseObject
                 if (isset($response->data['msg']) && $response->data['msg']) {
                     $ret['msg'] = $response->data['msg'];
                 } else {
-                    $ret['msg'] = $response->data['message'] ?? '系统错误';
+                    if ($httpStatusCode === self::API_CODE_UN_AUTH) {
+                        $ret['msg'] = 'Token已失效，请重新获取。';
+                    } else {
+                        $ret['msg'] = $response->data['message'] ?? '系统错误';
+                    }
                 }
                 $ret['data'] = [];
             } else {

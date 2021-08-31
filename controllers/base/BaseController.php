@@ -2,6 +2,8 @@
 
 namespace app\controllers\base;
 
+use app\common\base\AppResponse;
+use yii\rest\ActiveController;
 use yii\rest\Controller;
 use yii\web\Response;
 
@@ -14,7 +16,7 @@ class BaseController extends Controller
      *
      * @return Response
      */
-    public function returnJsonSucc( $data = [], $msg = '请求成功', $code = \app\common\jwt\Response::API_CODE_SUCCESS)
+    public function returnJsonSucc( array $data = [], string $msg = '请求成功', int $code = AppResponse::API_CODE_SUCCESS): Response
     {
         return $this->asJson([
             'code' => $code,
@@ -29,7 +31,7 @@ class BaseController extends Controller
      *
      * @return Response
      */
-    public function returnJsonFail($msg = '请求失败', $data = [], $code = \app\common\jwt\Response::API_CODE_CUSTOM_ERROR)
+    public function returnJsonFail(string $msg = '请求失败', array $data = [], int $code = AppResponse::API_CODE_CUSTOM_ERROR): Response
     {
         return $this->asJson([
             'code' => $code,
